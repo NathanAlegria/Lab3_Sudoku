@@ -144,7 +144,7 @@ public class Juego extends JFrame {
                         Tablero[i][j].setEditable(false);
                     }
                 }
-                JOptionPane.showMessageDialog(this, "FELICIDADES SUDOKU RESUELTO!!!", "Listo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Sudoku resuelto (trampita :c)", "Listo", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "No se puede resolver", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -168,9 +168,9 @@ public class Juego extends JFrame {
                 if (!completo) break;
             }
             if (completo) {
-                JOptionPane.showMessageDialog(this, "¡Sudoku correcto! Felicidades", "Listo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "FELICIDADES SUDOKU RESUELTO!!!", "Listo", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Faltan números o hay errores en el tablero", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Faltan numeros o hay errores en el tablero", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
