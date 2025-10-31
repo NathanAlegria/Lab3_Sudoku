@@ -15,7 +15,7 @@ public class Sudoku extends Logica {
         super(dimension);
         }
     
-    //Métodos que se heredaron
+    //Métodos claves
     @Override
     public boolean MovimientoValido() {
         int n = Tablero.length;
@@ -24,7 +24,7 @@ public class Sudoku extends Logica {
             return false;
         
         for (int i = 0; i < n; i++) {
-            if (!filasSinDuplicas(i))
+            if (!filasSinDuplica(i))
                 return false;
             }
         
@@ -80,9 +80,7 @@ public class Sudoku extends Logica {
     }
     
     private boolean esSeguro(int i, int j, int valor) {
-        return valorNoEnFila(i valor) && 
-                valorNoEnColumna(j, valor) && 
-                valorNoEnCaja(i, j, valor);
+        return valorNoEnFila(i, valor) && valorNoEnColumna(j, valor) && valorNoEnCaja(i, j, valor);
     }
     
     private boolean filasSinDuplica(int fila) {
@@ -99,7 +97,7 @@ public class Sudoku extends Logica {
         return true;
     }
     
-    private boolean columnaSinDuplica(int columna) {
+    private boolean columnasSinDuplica(int columna) {
         int n = Tablero.length;
         boolean[] visto = new boolean[n + 1];
         for (int i = 0; i < n; i++) {
@@ -131,10 +129,34 @@ public class Sudoku extends Logica {
         return true;
     }
     
+    private boolean valorNoEnFila(int fila, int valor) {
+        for(int j = 0; j < Tablero.length; j++) {
+            if (Tablero[fila][j] == valor)
+                return false;
+        }
+        return true;
+    }
+    
     private boolean valorNoEnColumna(int columna, int valor) {
         for(int i = 0; i < Tablero.length; i++) {
-            if (Tablero[i])
+            if (Tablero[i][columna] == valor)
+                return false;
         }
+        return true;
+    }
+    
+    private boolean valorNoEnCaja(int fila, int columna, int valor) {
+        int subindice = (int) Math.sqrt(Tablero.length);
+        int fi = (fila/subindice) * subindice;
+        int caja = (columna/subindice) * subindice;
+        
+        for (int i = 0; i < subindice; i++) {
+            for (int j = 0; j < subindice; j++) {
+                if (Tablero[fi + i][caja + j] == valor)
+                    return false;
+            }
+        }
+        return true;
     }
     
 }
