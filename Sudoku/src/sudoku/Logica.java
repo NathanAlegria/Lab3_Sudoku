@@ -9,7 +9,9 @@ package sudoku;
  * @author Nathan
  */
 public abstract class Logica {
+    
     protected int [][] Tablero;
+    
     public Logica(int dimension){
         Tablero=new int[dimension][dimension];
     }
