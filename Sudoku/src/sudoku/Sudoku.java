@@ -76,28 +76,36 @@ public class Sudoku extends Logica {
     }
 
     private boolean esSeguro(int fila, int col, int valor) {
-        return valorNoEnFila(fila, valor) && valorNoEnColumna(col, valor) && valorNoEnCaja(fila, col, valor);
+        return valorNoEnFila(fila, col, valor) && valorNoEnColumna(fila, col, valor) && valorNoEnCaja(fila, col, valor);
     }
 
-    private boolean valorNoEnFila(int fila, int valor) {
-        for (int j = 0; j < 9; j++)
+    private boolean valorNoEnFila(int fila, int col, int valor) {
+        for (int j = 0; j < 9; j++) {
+            if (j == col) continue;            // <-- evita compararse consigo misma
             if (Tablero[fila][j] == valor) return false;
+        }
         return true;
     }
 
-    private boolean valorNoEnColumna(int col, int valor) {
-        for (int i = 0; i < 9; i++)
+    private boolean valorNoEnColumna(int col, int fila, int valor) {
+         for (int i = 0; i < 9; i++) {
+            if (i == fila) continue;           // <-- evita compararse consigo misma
             if (Tablero[i][col] == valor) return false;
+        }
         return true;
     }
 
     private boolean valorNoEnCaja(int fila, int col, int valor) {
         int sub = 3;
         int startFila = (fila / sub) * sub;
-        int startCol = (col / sub) * sub;
-        for (int i = 0; i < sub; i++)
-            for (int j = 0; j < sub; j++)
-                if (Tablero[startFila + i][startCol + j] == valor) return false;
+        int startCol  = (col  / sub) * sub;
+        for (int i = 0; i < sub; i++) {
+            for (int j = 0; j < sub; j++) {
+                int r = startFila + i, c = startCol + j;
+                if (r == fila && c == col) continue; // <-- evita compararse consigo misma
+                if (Tablero[r][c] == valor) return false;
+            }
+        }
         return true;
     }
 
