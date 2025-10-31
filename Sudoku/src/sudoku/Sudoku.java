@@ -4,169 +4,138 @@
  */
 package sudoku;
 
-/**
- *
- * @author Nathan
- */
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Sudoku extends Logica {
 
-    // constructor
     public Sudoku(int dimension) {
         super(dimension);
+    }
+
+    public void generarCompleto() {
+        Tablero = new int[9][9];
+        generarRecursivo(0,0);
+    }
+
+    private boolean generarRecursivo(int fila, int col) {
+        if (fila == 9) return true;
+        int siguienteFila = (col == 8) ? fila + 1 : fila;
+        int siguienteCol = (col == 8) ? 0 : col + 1;
+
+        ArrayList<Integer> numeros = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) numeros.add(i);
+        Collections.shuffle(numeros);
+
+        for (int n : numeros) {
+            if (esSeguro(fila, col, n)) {
+                Tablero[fila][col] = n;
+                if (generarRecursivo(siguienteFila, siguienteCol)) return true;
+                Tablero[fila][col] = 0;
+            }
         }
-    
-    //Métodos claves
+        return false;
+    }
+
     @Override
     public boolean MovimientoValido() {
         int n = Tablero.length;
-        int subindice = (int) Math.sqrt(n);
-        if (subindice * subindice != n)
-            return false;
-        
+        int sub = (int) Math.sqrt(n);
         for (int i = 0; i < n; i++) {
-            if (!filasSinDuplica(i))
-                return false;
-            }
-        
-        for (int j = 0; j < n; j++) {
-            if (!columnasSinDuplica(j));
-                return false;
+            if (!filasSinDuplicados(i)) return false;
+            if (!columnasSinDuplicados(i)) return false;
         }
-        
-        for (int fila = 0; fila < n; fila += subindice) {
-            for (int caja = 0; caja < n; caja += subindice) {
-                if (!cajaSinDuplica(fila, caja, subindice))
-                    return false;
+        for (int i = 0; i < n; i += sub) {
+            for (int j = 0; j < n; j += sub) {
+                if (!cajaSinDuplicados(i, j, sub)) return false;
             }
         }
-        
         return true;
     }
-    
+
     @Override
     public boolean Resolver() {
-        if (!MovimientoValido())
-            return false;
-        
         int[] pos = buscarVacio();
-        if (pos == null)
-            return true;
-        
+        if (pos == null) return true;
         int i = pos[0], j = pos[1];
-        int n = Tablero.length;
-        
-        for (int valor = 1; valor <= n; valor++) {
+        for (int valor = 1; valor <= 9; valor++) {
             if (esSeguro(i, j, valor)) {
                 Tablero[i][j] = valor;
-                
-                if (Resolver())
-                    return true; 
-                
+                if (Resolver()) return true;
                 Tablero[i][j] = 0;
             }
         }
-        
         return false;
     }
-    
+
     private int[] buscarVacio() {
-        for (int i = 0; i < Tablero.length; i++) {
-            for (int j = 0; j < Tablero.length; j++) {
-                if (Tablero[i][j] == 0)
-                    return new int[]{i, j};
-            } 
-        }
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                if (Tablero[i][j] == 0) return new int[]{i,j};
         return null;
     }
-    
-    private boolean esSeguro(int i, int j, int valor) {
-        return valorNoEnFila(i, valor) && valorNoEnColumna(j, valor) && valorNoEnCaja(i, j, valor);
+
+    private boolean esSeguro(int fila, int col, int valor) {
+        return valorNoEnFila(fila, valor) && valorNoEnColumna(col, valor) && valorNoEnCaja(fila, col, valor);
     }
-    
-    public boolean esMovimientoValidoEn(int fila, int col, int valor) {
-        int temp = Tablero[fila][col];
-        Tablero[fila][col] = valor;
-        boolean valido = valorNoEnFila(fila, valor) &&
-                         valorNoEnColumna(col, valor) &&
-                         valorNoEnCaja(fila, col, valor);
-        Tablero[fila][col] = temp;
-        return valido;
-    }
-    
-    private boolean filasSinDuplica(int fila) {
-        int n = Tablero.length;
-        boolean[] visto = new boolean[n + 1];
-        for (int j = 0; j < n; j++) {
-            int v = Tablero[fila][j];
-            if (v == 0)
-                continue;
-            if (v < 1 || v > n || visto[v])
-                return false;
-            visto[v] = true;
-        }
-        return true;
-    }
-    
-    private boolean columnasSinDuplica(int columna) {
-        int n = Tablero.length;
-        boolean[] visto = new boolean[n + 1];
-        for (int i = 0; i < n; i++) {
-            int v = Tablero[i][columna];
-            if (v == 0)
-                continue;
-            if ( v < 1 || v > n || visto[v])
-                return false;
-            visto[v] = true;
-        }
-        
-        return true;
-    }
-    
-    private boolean cajaSinDuplica(int filaInicial, int colInicial, int subindice) {
-        int n = Tablero.length;
-        boolean[] visto = new boolean[n + 1];
-        for (int i = 0; i < subindice; i++) {
-            for (int j = 0; j < subindice; j++) {
-                int v = Tablero[filaInicial + i][colInicial + j];
-                if ( v == 0)
-                    continue;
-                if (v < 1 || v > n || visto[v])
-                    return false;
-                visto[v] = true;
-            }
-        }
-        
-        return true;
-    }
-    
+
     private boolean valorNoEnFila(int fila, int valor) {
-        for(int j = 0; j < Tablero.length; j++) {
-            if (Tablero[fila][j] == valor)
-                return false;
+        for (int j = 0; j < 9; j++)
+            if (Tablero[fila][j] == valor) return false;
+        return true;
+    }
+
+    private boolean valorNoEnColumna(int col, int valor) {
+        for (int i = 0; i < 9; i++)
+            if (Tablero[i][col] == valor) return false;
+        return true;
+    }
+
+    private boolean valorNoEnCaja(int fila, int col, int valor) {
+        int sub = 3;
+        int startFila = (fila / sub) * sub;
+        int startCol = (col / sub) * sub;
+        for (int i = 0; i < sub; i++)
+            for (int j = 0; j < sub; j++)
+                if (Tablero[startFila + i][startCol + j] == valor) return false;
+        return true;
+    }
+
+    private boolean filasSinDuplicados(int fila) {
+        boolean[] vistos = new boolean[10];
+        for (int j = 0; j < 9; j++) {
+            int v = Tablero[fila][j];
+            if (v == 0) continue;
+            if (vistos[v]) return false;
+            vistos[v] = true;
         }
         return true;
     }
-    
-    private boolean valorNoEnColumna(int columna, int valor) {
-        for(int i = 0; i < Tablero.length; i++) {
-            if (Tablero[i][columna] == valor)
-                return false;
+
+    private boolean columnasSinDuplicados(int col) {
+        boolean[] vistos = new boolean[10];
+        for (int i = 0; i < 9; i++) {
+            int v = Tablero[i][col];
+            if (v == 0) continue;
+            if (vistos[v]) return false;
+            vistos[v] = true;
         }
         return true;
     }
-    
-    private boolean valorNoEnCaja(int fila, int columna, int valor) {
-        int subindice = (int) Math.sqrt(Tablero.length);
-        int fi = (fila/subindice) * subindice;
-        int caja = (columna/subindice) * subindice;
-        
-        for (int i = 0; i < subindice; i++) {
-            for (int j = 0; j < subindice; j++) {
-                if (Tablero[fi + i][caja + j] == valor)
-                    return false;
+
+    private boolean cajaSinDuplicados(int filaInicio, int colInicio, int sub) {
+        boolean[] vistos = new boolean[10];
+        for (int i = 0; i < sub; i++)
+            for (int j = 0; j < sub; j++) {
+                int v = Tablero[filaInicio + i][colInicio + j];
+                if (v == 0) continue;
+                if (vistos[v]) return false;
+                vistos[v] = true;
             }
-        }
         return true;
     }
-    
+
+    public boolean esMovimientoValidoEn(int fila, int col, int valor) {
+        return esSeguro(fila, col, valor);
+    }
 }
