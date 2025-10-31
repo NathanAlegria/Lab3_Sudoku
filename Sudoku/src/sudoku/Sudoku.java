@@ -4,12 +4,15 @@
  */
 package sudoku;
 
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author Nathan
  */
 public class Sudoku extends Logica {
 
+<<<<<<< HEAD
     // constructor
     public Sudoku(int dimension) {
         super(dimension);
@@ -41,6 +44,15 @@ public class Sudoku extends Logica {
         }
         
         return true;
+=======
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Juego().setVisible(true);
+        });
+>>>>>>> d313bd92c7ebee6dd8c877107d23e518257276a5
     }
     
     @Override
