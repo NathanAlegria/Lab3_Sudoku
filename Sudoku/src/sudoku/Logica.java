@@ -8,6 +8,22 @@ package sudoku;
  *
  * @author Nathan
  */
-public class Logica {
+public abstract class Logica {
+    protected int [][] Tablero;
+    public Logica(int dimension){
+        Tablero=new int[dimension][dimension];
+    }
+    
+    public void setTablero(int [][] Tableroinicial){
+        this.Tablero=Tableroinicial;
+    }
+    
+    public int [][] getTablero(){
+        return Tablero;
+    }
+    
+    public abstract boolean MovimientoValido();
+    public abstract boolean Resolver();
+    
     
 }
