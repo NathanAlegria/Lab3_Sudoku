@@ -21,7 +21,7 @@ public class Juego extends JFrame {
         this.nivel = nivel;
         logicaSudoku = new Sudoku(9);
 
-        setTitle("Sudoku");
+        setTitle("CLOUD SUDOKU");
         setSize(600, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -34,7 +34,7 @@ public class Juego extends JFrame {
         panelTitulo.setLayout(new BorderLayout());
         panelTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
 
-        JLabel titulo = new JLabel("SUDOKU", SwingConstants.CENTER);
+        JLabel titulo = new JLabel("CLOUD SUDOKU :D", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 28));
         titulo.setForeground(new Color(0, 70, 140));
         panelTitulo.add(titulo, BorderLayout.CENTER);
@@ -104,6 +104,13 @@ public class Juego extends JFrame {
         btnSalir.setFocusPainted(false);
         panelBotones.add(btnSalir);
 
+        JButton btnReiniciar = new JButton("Reiniciar");
+        btnReiniciar.setFont(new Font("Arial", Font.BOLD, 18));
+        btnReiniciar.setForeground(new Color(0, 70, 140));
+        btnReiniciar.setBackground(new Color(220, 240, 255));
+        btnReiniciar.setFocusPainted(false);
+        panelBotones.add(btnReiniciar);
+
         JButton btnResolver = new JButton("Resolver");
         btnResolver.setFont(new Font("Arial", Font.BOLD, 18));
         btnResolver.setForeground(new Color(0, 70, 140));
@@ -111,11 +118,22 @@ public class Juego extends JFrame {
         btnResolver.setFocusPainted(false);
         panelBotones.add(btnResolver);
 
+        JButton btnValidar = new JButton("Validar");
+        btnValidar.setFont(new Font("Arial", Font.BOLD, 18));
+        btnValidar.setForeground(new Color(0, 70, 140));
+        btnValidar.setBackground(new Color(220, 240, 255));
+        btnValidar.setFocusPainted(false);
+        panelBotones.add(btnValidar);
+
         add(panelBotones, BorderLayout.SOUTH);
 
         btnSalir.addActionListener(e -> {
             this.dispose();
             new Menu().setVisible(true);
+        });
+
+        btnReiniciar.addActionListener(e -> {
+            generarSudokuPorNivel();
         });
 
         btnResolver.addActionListener(e -> {
@@ -126,9 +144,33 @@ public class Juego extends JFrame {
                         Tablero[i][j].setEditable(false);
                     }
                 }
-                JOptionPane.showMessageDialog(this, "Sudoku resuelto", "Listo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "FELICIDADES SUDOKU RESUELTO!!!", "Listo", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "No se puede resolver", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnValidar.addActionListener(e -> {
+            boolean completo = true;
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    String txt = Tablero[i][j].getText().trim();
+                    if (txt.equals("")) {
+                        completo = false;
+                        break;
+                    }
+                    int valor = Integer.parseInt(txt);
+                    if (!logicaSudoku.esMovimientoValidoEn(i, j, valor)) {
+                        completo = false;
+                        break;
+                    }
+                }
+                if (!completo) break;
+            }
+            if (completo) {
+                JOptionPane.showMessageDialog(this, "¡Sudoku correcto! Felicidades", "Listo", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Faltan números o hay errores en el tablero", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -150,7 +192,7 @@ public class Juego extends JFrame {
         int visibles;
         switch (nivel) {
             case 1: 
-                visibles = 79; 
+                visibles = 40; 
                 break;
             case 2: 
                 visibles = 30; 
@@ -190,4 +232,3 @@ public class Juego extends JFrame {
         }
     }
 }
-

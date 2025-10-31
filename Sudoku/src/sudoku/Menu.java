@@ -14,7 +14,7 @@ public class Menu extends JFrame {
 
     public Menu() {
         setTitle("CLOUD SUDOKU");
-        setSize(400, 400);
+        setSize(400, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -49,8 +49,9 @@ public class Menu extends JFrame {
         JButton btnFacil = new JButton("Facil :c");
         JButton btnMedio = new JButton("Medio :)");
         JButton btnDificil = new JButton("Dificil >:D");
+        JButton btnSalir = new JButton("-- SALIR --");
 
-        JButton[] botones = {btnFacil, btnMedio, btnDificil};
+        JButton[] botones = {btnFacil, btnMedio, btnDificil, btnSalir};
         for (JButton btn : botones) {
             btn.setFont(new Font("Arial", Font.BOLD, 20));
             btn.setForeground(new Color(0, 70, 140));
@@ -67,10 +68,15 @@ public class Menu extends JFrame {
         btnFacil.addActionListener(e -> iniciarJuego(1));
         btnMedio.addActionListener(e -> iniciarJuego(2));
         btnDificil.addActionListener(e -> iniciarJuego(3));
+        btnSalir.addActionListener(e -> {
+            System.out.println("Saliendo del juego...");
+            System.exit(0);
+        });
     }
 
     private void iniciarJuego(int nivel){
         nivelseleccionado = nivel;
+        System.out.println("Nivel seleccionado: " + nivel);
         dispose();
         Juego jugar = new Juego(nivel); 
         jugar.setVisible(true);
