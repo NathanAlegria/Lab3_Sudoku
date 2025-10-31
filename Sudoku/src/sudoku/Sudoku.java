@@ -83,6 +83,16 @@ public class Sudoku extends Logica {
         return valorNoEnFila(i, valor) && valorNoEnColumna(j, valor) && valorNoEnCaja(i, j, valor);
     }
     
+    public boolean esMovimientoValidoEn(int fila, int col, int valor) {
+        int temp = Tablero[fila][col];
+        Tablero[fila][col] = valor;
+        boolean valido = valorNoEnFila(fila, valor) &&
+                         valorNoEnColumna(col, valor) &&
+                         valorNoEnCaja(fila, col, valor);
+        Tablero[fila][col] = temp;
+        return valido;
+    }
+    
     private boolean filasSinDuplica(int fila) {
         int n = Tablero.length;
         boolean[] visto = new boolean[n + 1];

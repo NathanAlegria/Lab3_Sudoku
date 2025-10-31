@@ -19,7 +19,7 @@ public class Juego extends JFrame {
 
     public Juego(int nivel) {
         this.nivel = nivel;
-        logicaSudoku = new Sudoku(9); // tablero 9x9
+        logicaSudoku = new Sudoku(9);
 
         setTitle("Sudoku");
         setSize(600, 650);
@@ -55,33 +55,38 @@ public class Juego extends JFrame {
                 campo.setBorder(bordeCelda(fila, col));
                 Tablero[fila][col] = campo;
                 panelSudoku.add(campo);
-                
+
+                // -------------------- VALIDAR CELDA --------------------
                 int finalFila = fila;
                 int finalCol = col;
                 campo.addFocusListener(new java.awt.event.FocusAdapter() {
-                @Override
-                public void focusLost(java.awt.event.FocusEvent e) {
-                String txt = campo.getText();
-                if (!txt.isEmpty()) {
-                    try {
-                        int valor = Integer.parseInt(txt);
-                        logicaSudoku.Tablero[finalFila][finalCol] = valor;
+                    @Override
+                    public void focusLost(java.awt.event.FocusEvent e) {
+                        String txt = campo.getText();
+                        if (!txt.isEmpty()) {
+                            try {
+                                int valor = Integer.parseInt(txt);
+                                if (valor < 1 || valor > 9) throw new NumberFormatException();
 
-                        if (!logicaSudoku.MovimientoValido()) {
-                            campo.setText("");
+                                if (!logicaSudoku.esMovimientoValidoEn(finalFila, finalCol, valor)) {
+                                    campo.setText("");
+                                    JOptionPane.showMessageDialog(null,
+                                        "Número inválido en la posición (" + (finalFila+1) + "," + (finalCol+1) + ")",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                } else {
+                                    logicaSudoku.Tablero[finalFila][finalCol] = valor;
+                                }
+
+                            } catch (NumberFormatException ex) {
+                                campo.setText("");
+                                JOptionPane.showMessageDialog(null,
+                                    "Debes ingresar un número del 1 al 9",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
                             logicaSudoku.Tablero[finalFila][finalCol] = 0;
-                            JOptionPane.showMessageDialog(null, "Número inválido en la posición (" + (finalFila+1) + "," + (finalCol+1) + ")", 
-                            "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (NumberFormatException ex) {
-                        campo.setText("");
-                        logicaSudoku.Tablero[finalFila][finalCol] = 0;
-                        JOptionPane.showMessageDialog(null, "Debes ingresar un número del 1 al 9", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-            logicaSudoku.Tablero[finalFila][finalCol] = 0;
-                }
-                }
+                    }
                 });
             }
         }
@@ -94,7 +99,7 @@ public class Juego extends JFrame {
 
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("Arial", Font.BOLD, 18));
-        btnSalir.setForeground(new Color(0, 70, 140)); 
+        btnSalir.setForeground(new Color(0, 70, 140));
         btnSalir.setBackground(new Color(220, 240, 255));
         btnSalir.setFocusPainted(false);
         panelBotones.add(btnSalir);
@@ -115,15 +120,6 @@ public class Juego extends JFrame {
         });
 
         btnResolver.addActionListener(e -> {
-            // Pasamos los valores de la GUI a la lógica
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    String txt = Tablero[i][j].getText();
-                    logicaSudoku.Tablero[i][j] = txt.isEmpty() ? 0 : Integer.parseInt(txt);
-                }
-            }
-
-            // Intentamos resolver
             if (logicaSudoku.Resolver()) {
                 for (int i = 0; i < 9; i++) {
                     for (int j = 0; j < 9; j++) {
@@ -147,19 +143,15 @@ public class Juego extends JFrame {
         generarNumerosAleatorios(cantidad);
     }
 
-    // -------------------- BORDE DE CADA CELDA --------------------
     private Border bordeCelda(int fila, int col) {
         int top = 1, left = 1, bottom = 1, right = 1;
-
         if (fila % 3 == 0) top = 3;
         if (col % 3 == 0) left = 3;
         if (fila == 8) bottom = 3;
         if (col == 8) right = 3;
-
         return BorderFactory.createMatteBorder(top, left, bottom, right, new Color(0, 70, 140));
     }
 
-    // -------------------- GENERAR NUMEROS ALEATORIOS --------------------
     private void generarNumerosAleatorios(int cantidad) {
         Random rand = new Random();
         int colocados = 0;
@@ -185,7 +177,7 @@ public class Juego extends JFrame {
                     int elegido = numerosPosibles.get(rand.nextInt(numerosPosibles.size()));
                     Tablero[fila][col].setText(String.valueOf(elegido));
                     Tablero[fila][col].setEditable(false);
-                    logicaSudoku.Tablero[fila][col] = elegido; // actualizar lógica
+                    logicaSudoku.Tablero[fila][col] = elegido;
                     colocados++;
                 }
             }
